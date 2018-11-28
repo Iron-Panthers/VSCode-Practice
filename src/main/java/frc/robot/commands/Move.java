@@ -9,7 +9,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.Drive;
 import frc.robot.util.Constants;
 //import frc.robot.subsystems.Drive;
 
@@ -17,7 +16,7 @@ public class Move extends Command {
   public Move() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(new Drive());
+    requires(Robot.drive);
   }
 
   // Called just before this Command runs the first time
@@ -30,16 +29,16 @@ public class Move extends Command {
   protected void execute() {
     double x = Robot.m_oi.stick.getX();
     double y = Robot.m_oi.stick.getY();
-    double leftMotor = y + x;
-    double rightMotor = y - x;
-    if (leftMotor > 1) {
-        leftMotor = 1;
+    double leftMotorPower = y + x;
+    double rightMotorPower = y - x;
+    if (leftMotorPower > 1) {
+        leftMotorPower = 1;
     }
-    if(rightMotor < -1){
-        rightMotor = -1;
+    if(rightMotorPower < -1){
+        rightMotorPower = -1;
     }
 
-    Robot.drive.set(leftMotor, rightMotor);
+    Robot.drive.set(leftMotorPower, rightMotorPower);
   }
 
   // Make this return true when this Command no longer needs to run execute()
