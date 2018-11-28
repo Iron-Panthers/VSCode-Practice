@@ -14,6 +14,9 @@ package frc.robot;
  * floating around.
  */
 public class RobotMap {
+  public static final int LEFT_MOTOR = 1;
+  public static final int RIGHT_MOTOR = 9;
+  public static final int JOYSTICK = 1;
   // For example to map the left and right motors, you could define the
   // following variables to use with your drivetrain subsystem.
   // public static int leftMotor = 1;

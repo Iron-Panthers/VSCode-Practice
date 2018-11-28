@@ -7,18 +7,34 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.command.Subsystem;
+
+import frc.robot.Robot;
 
 /**
  * Add your docs here.
  */
 public class Drive extends Subsystem {
+  TalonSRX leftMotor;
+  TalonSRX rightMotor;
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
   public Drive(){
-    
+      leftMotor = Robot.hardware.leftMotor1;
+      rightMotor = Robot.hardware.rightMotor1;
   }
+  public void set(double leftPower, double rightPower) {
+      leftMotor.set(ControlMode.PercentOutput, leftPower);
+      rightMotor.set(ControlMode.PercentOutput, rightPower);
+  }
+  public void stop() {
+      leftMotor.set(ControlMode.PercentOutput, 0);
+      rightMotor.set(ControlMode.PercentOutput, 0);
+  } 
 
   @Override
   public void initDefaultCommand() {

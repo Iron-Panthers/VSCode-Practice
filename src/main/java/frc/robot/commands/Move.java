@@ -8,11 +8,16 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Robot;
+import frc.robot.subsystems.Drive;
+import frc.robot.util.Constants;
+//import frc.robot.subsystems.Drive;
 
-public class Drive extends Command {
-  public Drive() {
+public class Move extends Command {
+  public Move() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    requires(new Drive());
   }
 
   // Called just before this Command runs the first time
@@ -23,6 +28,18 @@ public class Drive extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    double x = Robot.m_oi.stick.getX();
+    double y = Robot.m_oi.stick.getY();
+    double leftMotor = y + x;
+    double rightMotor = y - x;
+    if (leftMotor > 1) {
+        leftMotor = 1;
+    }
+    if(rightMotor < -1){
+        rightMotor = -1;
+    }
+
+    Robot.drive.set(leftMotor, rightMotor);
   }
 
   // Make this return true when this Command no longer needs to run execute()
