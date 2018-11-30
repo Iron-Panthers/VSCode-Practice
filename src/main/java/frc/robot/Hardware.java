@@ -10,5 +10,6 @@ public class Hardware {
         /* I'm not using RobotMap because lazy  */
         rightMotor = new TalonSRX(9);
         leftMotor = new TalonSRX(1);
+        leftMotor.setInverted(true);
     }
 }

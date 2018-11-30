@@ -38,11 +38,11 @@ public class SpicyJoystick extends Joystick {
     
 	public double findLeftPower() {
 		findMagnitude();
-		return (y + x);
+		return (y - x);
     }
     
 	public double findRightPower() {
 		findMagnitude();
-		return (y - x);
+		return (y + x);
     }
 }
