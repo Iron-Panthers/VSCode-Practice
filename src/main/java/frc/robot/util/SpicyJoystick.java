@@ -27,10 +27,11 @@ public class SpicyJoystick extends Joystick {
 		x = getX();
 		y = getY();		
 		magnitude = Math.abs(Math.sqrt(x*x+y*y)); //Pythagorean theorem
-		if (magnitude > 1) { magnitude = 1;}
-        
-        //TODO: replace 0.05 with a constant (which should be called CIRCLE_DEADZONE)
-		double scaledMagnitude = (magnitude - 0.05) / (1 - 0.05);
+		if (magnitude > 1) { 
+			magnitude = 1;
+		}
+
+		double scaledMagnitude = (magnitude - Constants.CIRCLE_DEADZONE) / (1 - Constants.CIRCLE_DEADZONE);
 		x = x * scaledMagnitude;
 		y = y * scaledMagnitude;
 		magnitude = magnitude * scaledMagnitude;
@@ -44,5 +45,9 @@ public class SpicyJoystick extends Joystick {
 	public double findRightPower() {
 		findMagnitude();
 		return (y + x);
-    }
+	}
+
+	public boolean isStraight() {
+		return Math.abs(getX()) <= Constants.ERROR_RANGE_JOYSTICK;
+	}
 }
