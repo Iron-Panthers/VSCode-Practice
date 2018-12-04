@@ -44,6 +44,8 @@ public class Robot extends TimedRobot {
     /* do OI stuff keep this last */
     oi = new OI();
 
+    Robot.hardware.pigeon.setYaw(0, 1);
+
     //m_chooser.addDefault("Default Auto", new CommandNameHere());
     //chooser.addObject("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);

@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.util.Constants;
 
 public class DriveWithJoystick extends Command {
   public double currentStraightAngle;
@@ -28,14 +29,14 @@ public class DriveWithJoystick extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    error = 0;
-    if (!Robot.oi.stick.isStraight()) {
-      currentStraightAngle = Robot.hardware.gyroWrapper.getYaw();
-    } else {
-      error = currentStraightAngle - Robot.hardware.gyroWrapper.getYaw();
-    }
-    Robot.hardware.rightMotor.set(ControlMode.PercentOutput, Robot.oi.stick.findRightPower() + P*error);
-    Robot.hardware.leftMotor.set(ControlMode.PercentOutput, Robot.oi.stick.findLeftPower() - P*error);
+    // error = 0;
+    // if (!Robot.oi.stick.isStraight()) {
+    //   currentStraightAngle = Robot.hardware.gyroWrapper.getYaw();
+    // } else {
+    //   error = currentStraightAngle - Robot.hardware.gyroWrapper.getYaw();
+    // }
+    Robot.hardware.rightMotor.set(ControlMode.PercentOutput, (Robot.oi.stick.findRightPower()) * Constants.POWER_MULT_FOR_ARCADE);
+    Robot.hardware.leftMotor.set(ControlMode.PercentOutput, (Robot.oi.stick.findLeftPower()) * Constants.POWER_MULT_FOR_ARCADE);
   }
 
   // Make this return true when this Command no longer needs to run execute()

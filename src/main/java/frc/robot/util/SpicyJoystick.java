@@ -48,6 +48,6 @@ public class SpicyJoystick extends Joystick {
 	}
 
 	public boolean isStraight() {
-		return Math.abs(getX()) <= Constants.ERROR_RANGE_JOYSTICK;
+		return Math.abs(getX()) <= Constants.ERROR_RANGE_JOYSTICK && Math.abs(getY()) > Constants.CIRCLE_DEADZONE;
 	}
 }
