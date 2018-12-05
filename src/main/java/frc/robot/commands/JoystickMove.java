@@ -27,14 +27,15 @@ public class JoystickMove extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double x = deadzone(Robot.m_oi.stick.getX(), Constants.DEADZONE);
-    double y = deadzone(Robot.m_oi.stick.getY(), Constants.DEADZONE);
-    double leftMotorPower = y - x * (Constants.INVERT_TURN? -1 : 1);
-    double rightMotorPower = y + x * (Constants.INVERT_TURN? -1 : 1);
+    double x = deadzone(Robot.m_oi.stick.getX(), Constants.Arcade.DEADZONE);
+    double y = deadzone(Robot.m_oi.stick.getY(), Constants.Arcade.DEADZONE);
+    double leftMotorPower = y - x * (Constants.Arcade.INVERT_TURN? -1 : 1);
+    double rightMotorPower = y + x * (Constants.Arcade.INVERT_TURN? -1 : 1);
     leftMotorPower/=leftMotorPower>1||leftMotorPower<-1?Math.abs(leftMotorPower):1;
     rightMotorPower/=rightMotorPower>1||rightMotorPower<-1?Math.abs(rightMotorPower):1;
     
-    Robot.drive.set(leftMotorPower * Constants.ROBOT_SPEED, rightMotorPower * Constants.ROBOT_SPEED);
+    Robot.drive.set(leftMotorPower * Constants.Arcade.ROBOT_SPEED * (Constants.Arcade.INVERT_DIRECTION?-1:1), 
+                    rightMotorPower * Constants.Arcade.ROBOT_SPEED * (Constants.Arcade.INVERT_DIRECTION?-1:1));
   }
 
   // Make this return true when this Command no longer needs to run execute()

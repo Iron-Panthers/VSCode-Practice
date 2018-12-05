@@ -23,6 +23,7 @@ import frc.robot.util.Constants;
 public class Drive extends Subsystem {
   TalonSRX leftMotor;
   TalonSRX rightMotor;
+  Constants.Thrustmaster thrustmaster;
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
@@ -31,8 +32,8 @@ public class Drive extends Subsystem {
       rightMotor = Robot.hardware.rightMotor1;
   }
   public void set(double leftPower, double rightPower) {
-      leftMotor.set(ControlMode.PercentOutput, leftPower * (Constants.INVERT_DIRECTION?-1:1));
-      rightMotor.set(ControlMode.PercentOutput, rightPower * (Constants.INVERT_DIRECTION?-1:1));
+      leftMotor.set(ControlMode.PercentOutput, leftPower);
+      rightMotor.set(ControlMode.PercentOutput, rightPower);
   }
   public void stop() {
       leftMotor.set(ControlMode.PercentOutput, 0);

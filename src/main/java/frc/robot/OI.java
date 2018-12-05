@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.util.Constants;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -45,6 +46,6 @@ public class OI {
   public Joystick stick;
 
   public OI() {
-    stick = new Joystick(RobotMap.JOYSTICK);
+    stick = new Joystick(Constants.CONTROLLER == "thrustmaster" ? RobotMap.THRUSTMASTER : RobotMap.JOYSTICK);
   }
 }
