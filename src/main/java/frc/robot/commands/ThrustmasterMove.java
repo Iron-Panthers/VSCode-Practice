@@ -30,10 +30,10 @@ public class ThrustmasterMove extends Command {
     double x = deadzone(Robot.m_oi.stick.getX(), Constants.DEADZONE);
     double y = deadzone(Robot.m_oi.stick.getY(), Constants.DEADZONE);
     double throttle = deadzone(Robot.m_oi.stick.getZ(), Constants.DEADZONE);
-    double leftMotorPower = (y - x * (Constants.invertTurn? -1 : 1)) * throttle;
-    double rightMotorPower = (y + x * (Constants.invertTurn? -1 : 1)) * throttle;
-    leftMotorPower/=leftMotorPower>1||leftMotorPower<-1 ? Math.abs(leftMotorPower) : 1;
-    rightMotorPower/=rightMotorPower>1||rightMotorPower<-1 ? Math.abs(rightMotorPower) : 1;
+    double leftMotorPower = (y - x * (Constants.INVERT_TURN ? -1 : 1)) * throttle;
+    double rightMotorPower = (y + x * (Constants.INVERT_TURN ? -1 : 1)) * throttle;
+    leftMotorPower /= leftMotorPower > 1 || leftMotorPower < -1 ? Math.abs(leftMotorPower) : 1;
+    rightMotorPower /= rightMotorPower > 1 || rightMotorPower < -1 ? Math.abs(rightMotorPower) : 1;
     Robot.drive.set(leftMotorPower * Constants.ROBOT_SPEED, rightMotorPower * Constants.ROBOT_SPEED);
   }
 
@@ -54,10 +54,11 @@ public class ThrustmasterMove extends Command {
   protected void interrupted() {
   }
 
-  double deadzone(double value, double deadzone){
-    return (Math.abs(value) > Math.abs(deadzone)? map(Math.abs(value), deadzone, 1, 0, 1): 0) * (value >= 0? 1: -1);
+  double deadzone(double value, double deadzone) {
+    return (Math.abs(value) > Math.abs(deadzone) ? map(Math.abs(value), deadzone, 1, 0, 1) : 0) * (value >= 0 ? 1 : -1);
   }
-  double map(double value, double currentMin, double currentMax, double newMin, double newMax){
-    return (value - currentMin)/(currentMax - currentMin) * (newMax - newMin) + newMin;
+
+  double map(double value, double currentMin, double currentMax, double newMin, double newMax) {
+    return (value - currentMin) / (currentMax - currentMin) * (newMax - newMin) + newMin;
   }
 }

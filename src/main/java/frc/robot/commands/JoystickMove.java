@@ -29,8 +29,8 @@ public class JoystickMove extends Command {
   protected void execute() {
     double x = deadzone(Robot.m_oi.stick.getX(), Constants.DEADZONE);
     double y = deadzone(Robot.m_oi.stick.getY(), Constants.DEADZONE);
-    double leftMotorPower = y - x * (Constants.invertTurn? -1 : 1);
-    double rightMotorPower = y + x * (Constants.invertTurn? -1 : 1);
+    double leftMotorPower = y - x * (Constants.INVERT_TURN? -1 : 1);
+    double rightMotorPower = y + x * (Constants.INVERT_TURN? -1 : 1);
     leftMotorPower/=leftMotorPower>1||leftMotorPower<-1?Math.abs(leftMotorPower):1;
     rightMotorPower/=rightMotorPower>1||rightMotorPower<-1?Math.abs(rightMotorPower):1;
     

@@ -31,8 +31,8 @@ public class Drive extends Subsystem {
       rightMotor = Robot.hardware.rightMotor1;
   }
   public void set(double leftPower, double rightPower) {
-      leftMotor.set(ControlMode.PercentOutput, leftPower * (Constants.invertDirection?-1:1));
-      rightMotor.set(ControlMode.PercentOutput, rightPower * (Constants.invertDirection?-1:1));
+      leftMotor.set(ControlMode.PercentOutput, leftPower * (Constants.INVERT_DIRECTION?-1:1));
+      rightMotor.set(ControlMode.PercentOutput, rightPower * (Constants.INVERT_DIRECTION?-1:1));
   }
   public void stop() {
       leftMotor.set(ControlMode.PercentOutput, 0);
@@ -42,6 +42,6 @@ public class Drive extends Subsystem {
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
-    setDefaultCommand(new ThrustmasterMove());
+    setDefaultCommand((Constants.CONTROLLER == "thrustmaster") ? new ThrustmasterMove() : new JoystickMove());
   }
 }
