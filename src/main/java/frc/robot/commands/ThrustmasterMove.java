@@ -13,6 +13,11 @@ import frc.robot.util.Constants;
 //import frc.robot.subsystems.Drive;
 
 public class ThrustmasterMove extends Command {
+
+  private double turningSpeed = 0;
+  private double turningAccel = 0.01;
+  private double turningDeccel = 0.01;
+
   public ThrustmasterMove() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -30,11 +35,14 @@ public class ThrustmasterMove extends Command {
     double x = deadzone(Robot.m_oi.stick.getX(), Constants.Thrustmaster.DEADZONE);
     double y = deadzone(Robot.m_oi.stick.getY(), Constants.Thrustmaster.DEADZONE);
     double throttle = deadzone(Robot.m_oi.stick.getZ(), Constants.Thrustmaster.DEADZONE);
-    double leftMotorPower = (y - x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1)) * throttle;
-    double rightMotorPower = (y + x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1)) * throttle;
+
+    turningSpeed = 1 - map(Math.abs(y), 0, 1, 0, 0.9);
+    if(turningSpeed > 1){turningSpeed = 1;}
+    double leftMotorPower = (y - x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1) * turningSpeed)  * throttle;
+    double rightMotorPower = (y + x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1) * turningSpeed) * throttle;
+    
     leftMotorPower /= leftMotorPower > 1 || leftMotorPower < -1 ? Math.abs(leftMotorPower) : 1;
     rightMotorPower /= rightMotorPower > 1 || rightMotorPower < -1 ? Math.abs(rightMotorPower) : 1;
-
 
     Robot.drive.set(leftMotorPower * Constants.Thrustmaster.ROBOT_SPEED * (Constants.Thrustmaster.INVERT_DIRECTION?-1:1), 
                     rightMotorPower * Constants.Thrustmaster.ROBOT_SPEED * (Constants.Thrustmaster.INVERT_DIRECTION?-1:1));
