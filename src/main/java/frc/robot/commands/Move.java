@@ -27,18 +27,14 @@ public class Move extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double x = Robot.m_oi.stick.getX();
-    double y = Robot.m_oi.stick.getY();
-    double leftMotorPower = y + x;
-    double rightMotorPower = y - x;
-    if (leftMotorPower > 1) {
-        leftMotorPower = 1;
-    }
-    if(rightMotorPower < -1){
-        rightMotorPower = -1;
-    }
-
-    Robot.drive.set(leftMotorPower, rightMotorPower);
+    double x = deadzone(Robot.m_oi.stick.getX(), Constants.DEADZONE);
+    double y = deadzone(Robot.m_oi.stick.getY(), Constants.DEADZONE);
+    double leftMotorPower = y - x;
+    double rightMotorPower = y + x;
+    leftMotorPower/=leftMotorPower>1||leftMotorPower<-1?Math.abs(leftMotorPower):1;
+    rightMotorPower/=rightMotorPower>1||rightMotorPower<-1?Math.abs(rightMotorPower):1;
+    
+    Robot.drive.set(leftMotorPower * Constants.ROBOT_SPEED, rightMotorPower * Constants.ROBOT_SPEED);
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -56,5 +52,12 @@ public class Move extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+  }
+
+  double deadzone(double value, double deadzone){
+    return (Math.abs(value) > Math.abs(deadzone)? map(Math.abs(value), deadzone, 1, 0, 1): 0) * (value >= 0? 1: -1);
+  }
+  double map(double value, double currentMin, double currentMax, double newMin, double newMax){
+    return (value - currentMin)/(currentMax - currentMin) * (newMax - newMin) + newMin;
   }
 }

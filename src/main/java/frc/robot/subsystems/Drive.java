@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 import frc.robot.Robot;
+import frc.robot.commands.Move;
 
 /**
  * Add your docs here.
@@ -34,11 +35,11 @@ public class Drive extends Subsystem {
   public void stop() {
       leftMotor.set(ControlMode.PercentOutput, 0);
       rightMotor.set(ControlMode.PercentOutput, 0);
-  } 
+  }
 
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
-    // setDefaultCommand(new MySpecialCommand());
+    setDefaultCommand(new Move());
   }
 }
