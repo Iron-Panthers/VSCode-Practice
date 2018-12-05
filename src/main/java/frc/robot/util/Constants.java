@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 public class Constants {
+    /*  CONTROLLERS: "thrustmaster", "arcade"  */
     public static final String CONTROLLER = "thrustmaster";
     public class Thrustmaster{
         public static final double ROBOT_SPEED = 1;

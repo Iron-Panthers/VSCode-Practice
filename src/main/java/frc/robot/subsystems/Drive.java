@@ -23,7 +23,6 @@ import frc.robot.util.Constants;
 public class Drive extends Subsystem {
   TalonSRX leftMotor;
   TalonSRX rightMotor;
-  Constants.Thrustmaster thrustmaster;
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
