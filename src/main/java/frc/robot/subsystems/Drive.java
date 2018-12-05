@@ -13,7 +13,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 import frc.robot.Robot;
-import frc.robot.commands.Move;
+import frc.robot.commands.JoystickMove;
+import frc.robot.commands.ThrustmasterMove;
+import frc.robot.util.Constants;
 
 /**
  * Add your docs here.
@@ -29,8 +31,8 @@ public class Drive extends Subsystem {
       rightMotor = Robot.hardware.rightMotor1;
   }
   public void set(double leftPower, double rightPower) {
-      leftMotor.set(ControlMode.PercentOutput, leftPower);
-      rightMotor.set(ControlMode.PercentOutput, rightPower);
+      leftMotor.set(ControlMode.PercentOutput, leftPower * (Constants.invertDirection?-1:1));
+      rightMotor.set(ControlMode.PercentOutput, rightPower * (Constants.invertDirection?-1:1));
   }
   public void stop() {
       leftMotor.set(ControlMode.PercentOutput, 0);
@@ -40,6 +42,6 @@ public class Drive extends Subsystem {
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
-    setDefaultCommand(new Move());
+    setDefaultCommand(new ThrustmasterMove());
   }
 }

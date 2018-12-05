@@ -12,8 +12,8 @@ import frc.robot.Robot;
 import frc.robot.util.Constants;
 //import frc.robot.subsystems.Drive;
 
-public class Move extends Command {
-  public Move() {
+public class JoystickMove extends Command {
+  public JoystickMove() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.drive);
@@ -29,8 +29,8 @@ public class Move extends Command {
   protected void execute() {
     double x = deadzone(Robot.m_oi.stick.getX(), Constants.DEADZONE);
     double y = deadzone(Robot.m_oi.stick.getY(), Constants.DEADZONE);
-    double leftMotorPower = y - x;
-    double rightMotorPower = y + x;
+    double leftMotorPower = y - x * (Constants.invertTurn? -1 : 1);
+    double rightMotorPower = y + x * (Constants.invertTurn? -1 : 1);
     leftMotorPower/=leftMotorPower>1||leftMotorPower<-1?Math.abs(leftMotorPower):1;
     rightMotorPower/=rightMotorPower>1||rightMotorPower<-1?Math.abs(rightMotorPower):1;
     
