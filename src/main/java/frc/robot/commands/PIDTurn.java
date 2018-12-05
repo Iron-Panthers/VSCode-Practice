@@ -27,8 +27,8 @@ public class PIDTurn extends PIDCommand {
     }
 	
 	protected void execute() {
-        Robot.hardware.rightMotor.set(ControlMode.PercentOutput, PIDTurnSolution);
-        Robot.hardware.leftMotor.set(ControlMode.PercentOutput, PIDTurnSolution);
+        Robot.hardware.rightMotor.set(ControlMode.PercentOutput, 10 * PIDTurnSolution);
+        Robot.hardware.leftMotor.set(ControlMode.PercentOutput, 10 * PIDTurnSolution);
     }
 	
 	@Override

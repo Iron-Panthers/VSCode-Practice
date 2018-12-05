@@ -8,6 +8,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.PIDTurn;
 import frc.robot.util.SpicyJoystick;
 
 /**
@@ -20,8 +21,8 @@ public class OI {
 
   public OI() {
     stick = new SpicyJoystick(0);
-    button1 = new JoystickButton(stick, 0);
-    // button1.whenPressed( turn 90 degs);
+    button1 = new JoystickButton(stick, 1);
+    button1.whenPressed(new PIDTurn(4, 0.1, 0.1, 90.0));
   }
   // Joystick stick = new Joystick(port);
   // Button button = new JoystickButton(stick, buttonNumber);
