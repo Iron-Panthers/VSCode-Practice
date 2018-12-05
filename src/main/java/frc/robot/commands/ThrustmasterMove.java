@@ -27,14 +27,17 @@ public class ThrustmasterMove extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double x = deadzone(Robot.m_oi.stick.getX(), Constants.DEADZONE);
-    double y = deadzone(Robot.m_oi.stick.getY(), Constants.DEADZONE);
-    double throttle = deadzone(Robot.m_oi.stick.getZ(), Constants.DEADZONE);
-    double leftMotorPower = (y - x * (Constants.INVERT_TURN ? -1 : 1)) * throttle;
-    double rightMotorPower = (y + x * (Constants.INVERT_TURN ? -1 : 1)) * throttle;
+    double x = deadzone(Robot.m_oi.stick.getX(), Constants.Thrustmaster.DEADZONE);
+    double y = deadzone(Robot.m_oi.stick.getY(), Constants.Thrustmaster.DEADZONE);
+    double throttle = deadzone(Robot.m_oi.stick.getZ(), Constants.Thrustmaster.DEADZONE);
+    double leftMotorPower = (y - x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1)) * throttle;
+    double rightMotorPower = (y + x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1)) * throttle;
     leftMotorPower /= leftMotorPower > 1 || leftMotorPower < -1 ? Math.abs(leftMotorPower) : 1;
     rightMotorPower /= rightMotorPower > 1 || rightMotorPower < -1 ? Math.abs(rightMotorPower) : 1;
-    Robot.drive.set(leftMotorPower * Constants.ROBOT_SPEED, rightMotorPower * Constants.ROBOT_SPEED);
+
+
+    Robot.drive.set(leftMotorPower * Constants.Thrustmaster.ROBOT_SPEED * (Constants.Thrustmaster.INVERT_DIRECTION?-1:1), 
+                    rightMotorPower * Constants.Thrustmaster.ROBOT_SPEED * (Constants.Thrustmaster.INVERT_DIRECTION?-1:1));
   }
 
   // Make this return true when this Command no longer needs to run execute()
