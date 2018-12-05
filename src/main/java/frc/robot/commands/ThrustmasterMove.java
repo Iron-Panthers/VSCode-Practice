@@ -36,7 +36,7 @@ public class ThrustmasterMove extends Command {
     double y = deadzone(Robot.m_oi.stick.getY(), Constants.Thrustmaster.DEADZONE);
     double throttle = deadzone(Robot.m_oi.stick.getZ(), Constants.Thrustmaster.DEADZONE);
 
-    turningSpeed = 1 - map(Math.abs(y), 0, 1, 0, 0.9);
+    turningSpeed = 1 - map(Math.abs(throttle), 0, 1, 0, 0.9);
     if(turningSpeed > 1){turningSpeed = 1;}
     double leftMotorPower = (y - x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1) * turningSpeed)  * throttle;
     double rightMotorPower = (y + x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1) * turningSpeed) * throttle;
