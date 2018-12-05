@@ -28,10 +28,16 @@ public class DriveWithJoystick extends Command {
   protected void execute() {
 	  double z = Robot.oi.driveStick.getZ();
 	  double x = Robot.oi.driveStick.getX();
+	//   if (Math.abs(z) < Constants.THRUST_DEADZONE){
+	// 	  z = 0;
+	//   }
+	//   if (Math.abs(x) < Constants.X_DEADZONE){
+	// 	  x = 0;
+	//   }
 	  
 	  //Scales the value after applying the deadzone
-	  z = (z - Constants.THRUST_DEADZONE) / (1 - Constants.THRUST_DEADZONE);
-	  x = (x - Constants.X_DEADZONE) / (1 - Constants.X_DEADZONE);
+	//   z *= (z - Constants.THRUST_DEADZONE) / (1 - Constants.THRUST_DEADZONE);
+	//   x = (x - Constants.X_DEADZONE) / (1 - Constants.X_DEADZONE);
 
 	  Robot.drive.move(z + x, z - x);
   }

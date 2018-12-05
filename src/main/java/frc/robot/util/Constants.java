@@ -21,7 +21,7 @@ public class Constants {
 	public static final boolean IS_LEFT_INVERTED = false;
 	public static final boolean IS_RIGHT_INVERTED = true;
 
-	public static final double THRUST_DEADZONE = 0.05;
-	public static final double X_DEADZONE = 0.05;
+	public static final double THRUST_DEADZONE = 0.00;
+	public static final double X_DEADZONE = 0.0;
 
 }
