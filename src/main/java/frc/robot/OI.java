@@ -8,6 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.JoystickBase;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.util.Constants;
 
 /**
@@ -15,7 +17,7 @@ import frc.robot.util.Constants;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-  
+
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
   //// joystick.
@@ -44,6 +46,7 @@ public class OI {
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
   public Joystick stick;
+  public JoystickButton trigger;
 
   public OI() {
     stick = new Joystick(Constants.CONTROLLER == "thrustmaster" ? RobotMap.THRUSTMASTER : RobotMap.JOYSTICK);
