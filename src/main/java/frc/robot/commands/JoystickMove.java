@@ -7,16 +7,23 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.ThrustMasterHelper;
 import frc.robot.util.*;
-//import frc.robot.subsystems.Drive;
 
 public class JoystickMove extends Command {
+
+  Joystick stick;
+  ThrustMasterHelper thrustmaster;
+
   public JoystickMove() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.drive);
+    stick = Robot.m_oi.stick;
+    thrustmaster = new ThrustMasterHelper(stick);
   }
 
   // Called just before this Command runs the first time
@@ -27,15 +34,9 @@ public class JoystickMove extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    double x = deadzone(Robot.m_oi.stick.getX(), Constants.Arcade.DEADZONE);
-    double y = deadzone(Robot.m_oi.stick.getY(), Constants.Arcade.DEADZONE);
-    double leftMotorPower = y - x * (Constants.Arcade.INVERT_TURN? -1 : 1);
-    double rightMotorPower = y + x * (Constants.Arcade.INVERT_TURN? -1 : 1);
-    leftMotorPower/=leftMotorPower>1||leftMotorPower<-1?Math.abs(leftMotorPower):1;
-    rightMotorPower/=rightMotorPower>1||rightMotorPower<-1?Math.abs(rightMotorPower):1;
-    
-    Robot.drive.set(leftMotorPower * Constants.Arcade.ROBOT_SPEED * (Constants.Arcade.INVERT_DIRECTION?-1:1), 
-                    rightMotorPower * Constants.Arcade.ROBOT_SPEED * (Constants.Arcade.INVERT_DIRECTION?-1:1));
+    Robot.drive.set(
+        thrustmaster.realMotorPower.get("left") * (Constants.Thrustmaster.INVERT_DIRECTION ? -1 : 1),
+        thrustmaster.realMotorPower.get("right") *(Constants.Thrustmaster.INVERT_DIRECTION ? -1 : 1));
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -55,10 +56,5 @@ public class JoystickMove extends Command {
   protected void interrupted() {
   }
 
-  double deadzone(double value, double deadzone){
-    return (Math.abs(value) > Math.abs(deadzone)? map(Math.abs(value), deadzone, 1, 0, 1): 0) * (value >= 0? 1: -1);
-  }
-  double map(double value, double currentMin, double currentMax, double newMin, double newMax){
-    return (value - currentMin)/(currentMax - currentMin) * (newMax - newMin) + newMin;
-  }
+  
 }

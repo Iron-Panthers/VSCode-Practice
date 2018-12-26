@@ -6,28 +6,28 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.RobotMap;
 import frc.robot.util.*;
 
-public class ThrustMasterHelper {
+public class ArcadeMoveHelper {
 
     public HashMap<String, Double> realMotorPower;
     public Joystick stick;
 
     private double speedMultiplier;
 
-    public ThrustMasterHelper(Joystick stick) {
+    public ArcadeMoveHelper(Joystick stick) {
         this.stick = stick;
-        double[] rawMotorPower = calculateMotorPower(stick.getX(), stick.getY(), stick.getZ());
+        double[] rawMotorPower = calculateMotorPower(stick.getX(), stick.getY(), Constants.Arcade.ROBOT_SPEED);
         realMotorPower.put("left", rawMotorPower[0]);
         realMotorPower.put("right", rawMotorPower[1]);
     }
 
     double[] calculateMotorPower(double x, double y, double throttle) {
         /* Initialization of x and y motor powers */
-        x = linearDeadzone(x, Constants.Thrustmaster.DEADZONE);// prevents the robot from moving without user input
-        y = linearDeadzone(y, Constants.Thrustmaster.DEADZONE);
+        x = linearDeadzone(x, Constants.Arcade.DEADZONE);// prevents the robot from moving without user input
+        y = linearDeadzone(y, Constants.Arcade.DEADZONE);
         double modifiedY = y * throttle;//using throttle as a speed multiplyer
 
         /* Limits turning speed based off of forward speed */
-        double turningSpeed = 1 - map(Math.abs(modifiedY), 0, 1, 0, 0.8);// slower turning the faster you go. The higher the last double, the slower the speed
+        double turningSpeed = 1 - map(Math.abs(throttle * y), 0, 1, 0, 0.8);// slower turning the faster you go
         if (turningSpeed > 1) {
             turningSpeed = 1;
         }
@@ -37,16 +37,16 @@ public class ThrustMasterHelper {
         if (getButton(RobotMap.POWER_SHIFT)) {
             throttle = 1;
         } // when pressing the trigger, go full speed
-        speedMultiplier = Math.abs(modifiedY) > speedMultiplier ? speedMultiplier + Constants.Thrustmaster.ACCELERATION
+        speedMultiplier = Math.abs(modifiedY) > speedMultiplier ? speedMultiplier + Constants.Arcade.ACCELERATION
                 : Math.abs(modifiedY);
         if (speedMultiplier > Math.abs(modifiedY)) {
             speedMultiplier = Math.abs(modifiedY);
         }
 
         // calculates the motor power based off of the thrustmaster input
-        double leftMotorPower = (y - x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1) * turningSpeed)
+        double leftMotorPower = (y - x * (Constants.Arcade.INVERT_TURN ? -1 : 1) * turningSpeed)
                 * speedMultiplier;
-        double rightMotorPower = (y + x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1) * turningSpeed)
+        double rightMotorPower = (y + x * (Constants.Arcade.INVERT_TURN ? -1 : 1) * turningSpeed)
                 * speedMultiplier;
 
         // prevents the power from exceding 1
@@ -54,8 +54,8 @@ public class ThrustMasterHelper {
         rightMotorPower /= rightMotorPower > 1 || rightMotorPower < -1 ? Math.abs(rightMotorPower) : 1;
 
         // returns the motor speeds in a more spicy way
-        double[] motorSpeeds = { leftMotorPower * Constants.Thrustmaster.ROBOT_SPEED,
-                rightMotorPower * Constants.Thrustmaster.ROBOT_SPEED };
+        double[] motorSpeeds = { leftMotorPower * Constants.Arcade.ROBOT_SPEED,
+                rightMotorPower * Constants.Arcade.ROBOT_SPEED };
         return motorSpeeds;
     }
 
