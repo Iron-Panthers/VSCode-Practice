@@ -1,7 +1,6 @@
 package frc.robot.util;
 
 import java.util.HashMap;
-
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.RobotMap;
 
@@ -10,11 +9,20 @@ public class ThrustMasterHelper {
     public HashMap<String, Double> realMotorPower = new HashMap<>();
     public Joystick stick;
 
-    private double speedMultiplier;
+    public boolean reverse = false;
+    public double speedMultiplier;
 
     public ThrustMasterHelper(Joystick stick) {
         this.stick = stick;
-        double[] rawMotorPower = calculateMotorPower(stick.getX(), stick.getY(), stick.getZ());
+    }
+
+    public void reset(){
+        speedMultiplier = 0;
+        reverse = false;
+    }
+
+    public void setMotorPowers() {
+        double[] rawMotorPower = calculateMotorPower(this.stick.getX(), this.stick.getY(), this.stick.getZ());
         realMotorPower.put("left", rawMotorPower[0]);
         realMotorPower.put("right", rawMotorPower[1]);
     }
@@ -22,36 +30,43 @@ public class ThrustMasterHelper {
     double[] calculateMotorPower(double x, double y, double throttle) {
         /* Initialization of x and y motor powers */
         x = linearDeadzone(x, Constants.Thrustmaster.DEADZONE);// prevents the robot from moving without user input
-        y = linearDeadzone(y, Constants.Thrustmaster.DEADZONE);
-        double modifiedY = y * throttle;//using throttle as a speed multiplyer
+        y = linearDeadzone(y, Constants.Thrustmaster.DEADZONE) * (reverse? -1 : 1);
+        x = getButton(RobotMap.QUICK_TURN) && x != 0 ? x / Math.abs(x) : x;
+        y /= getButton(RobotMap.POWER_SHIFT) && y != 0 ? Math.abs(y) : 1;
+
+        double modifiedY = y * throttle;// using throttle as a speed multiplyer
 
         /* Limits turning speed based off of forward speed */
-        double turningSpeed = 1 - map(Math.abs(modifiedY), 0, 1, 0, 0.8);// slower turning the faster you go. The higher the last double, the slower the speed
+        double turningSpeed = 1 - map(Math.abs(modifiedY), 0, 1, 0, 0.4);// slower turning the faster you go
         if (turningSpeed > 1) {
             turningSpeed = 1;
         }
         turningSpeed *= Constants.Thrustmaster.TURNING_SPEED;
+        turningSpeed = getButton(RobotMap.QUICK_TURN) ? Constants.Thrustmaster.TURNING_SPEED : turningSpeed;
 
         /* adds acceleration to the speed */
-        if (getButton(RobotMap.POWER_SHIFT)) {
-            throttle = 1;
-        } // when pressing the trigger, go full speed
-        speedMultiplier = Math.abs(modifiedY) > speedMultiplier ? speedMultiplier + Constants.ACCELERATION
-                : Math.abs(modifiedY);
-        if (speedMultiplier > Math.abs(modifiedY)) {
-            speedMultiplier = Math.abs(modifiedY);
+        if (modifiedY > speedMultiplier) {
+            speedMultiplier = modifiedY - speedMultiplier < Constants.ACCELERATION ? modifiedY
+                    : speedMultiplier + Constants.ACCELERATION;
         }
+        if (modifiedY < speedMultiplier) {
+            speedMultiplier = speedMultiplier - modifiedY < Constants.DECELERATION ? modifiedY
+                    : speedMultiplier - Constants.DECELERATION;
+        }
+        speedMultiplier = speedMultiplier > 1 ? 1 : speedMultiplier < -1 ? -1 : speedMultiplier;
+        y = Math.copySign(speedMultiplier, y);
 
         // calculates the motor power based off of the thrustmaster input
-        double leftMotorPower = (y - x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1) * turningSpeed)
-                * speedMultiplier;
-        double rightMotorPower = (y + x * (Constants.Thrustmaster.INVERT_TURN ? -1 : 1) * turningSpeed)
-                * speedMultiplier;
+        int turnDirection = (Constants.Thrustmaster.INVERT_TURN ? -1 : 1);
+        double leftMotorPower = (y - x * turnDirection * turningSpeed) * throttle;
+        double rightMotorPower = (y + x * turnDirection * turningSpeed) * throttle;
 
         // prevents the power from exceding 1
-        leftMotorPower /= leftMotorPower > 1 || leftMotorPower < -1 ? Math.abs(leftMotorPower) : 1;
-        rightMotorPower /= rightMotorPower > 1 || rightMotorPower < -1 ? Math.abs(rightMotorPower) : 1;
+        leftMotorPower /= Math.abs(leftMotorPower) > 1 ? Math.abs(leftMotorPower) : 1;
+        rightMotorPower /= Math.abs(rightMotorPower) > 1 ? Math.abs(rightMotorPower) : 1;
 
+        // allows the user to go in reverse quickly
+        reverse = buttonClicked(RobotMap.REVERSE) ? !reverse : reverse;
         // returns the motor speeds in a more spicy way
         double[] motorSpeeds = { leftMotorPower * Constants.Thrustmaster.ROBOT_SPEED,
                 rightMotorPower * Constants.Thrustmaster.ROBOT_SPEED };
@@ -62,9 +77,13 @@ public class ThrustMasterHelper {
         return stick.getRawButton(button);
     }
 
+    boolean buttonClicked(int button) {
+        return stick.getRawButtonPressed(button);
+    }
+
     double linearDeadzone(double value, double deadzone) {
         // prevents unintended robot movement when the joystick is still
-        return (Math.abs(value) > Math.abs(deadzone) ? map(Math.abs(value), deadzone, 1, 0, 1) : 0)
+        return (Math.abs(value) > Math.abs(deadzone) ? map(Math.abs(value), deadzone, 1, 0.05, 1) : 0)
                 * (value >= 0 ? 1 : -1);
     }
 
