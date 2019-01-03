@@ -35,8 +35,8 @@ public class Drive extends Subsystem {
       rightMotor.set(ControlMode.PercentOutput, rightPower);
   }
   public void stop() {
-      leftMotor.set(ControlMode.PercentOutput, 0);
       rightMotor.set(ControlMode.PercentOutput, 0);
+      leftMotor.set(ControlMode.PercentOutput, 0);
   }
 
   @Override

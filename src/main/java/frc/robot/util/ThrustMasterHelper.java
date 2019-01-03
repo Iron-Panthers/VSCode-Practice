@@ -1,14 +1,13 @@
-package frc.robot.subsystems;
+package frc.robot.util;
 
 import java.util.HashMap;
 
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.RobotMap;
-import frc.robot.util.*;
 
 public class ThrustMasterHelper {
 
-    public HashMap<String, Double> realMotorPower;
+    public HashMap<String, Double> realMotorPower = new HashMap<>();
     public Joystick stick;
 
     private double speedMultiplier;
@@ -37,7 +36,7 @@ public class ThrustMasterHelper {
         if (getButton(RobotMap.POWER_SHIFT)) {
             throttle = 1;
         } // when pressing the trigger, go full speed
-        speedMultiplier = Math.abs(modifiedY) > speedMultiplier ? speedMultiplier + Constants.Thrustmaster.ACCELERATION
+        speedMultiplier = Math.abs(modifiedY) > speedMultiplier ? speedMultiplier + Constants.ACCELERATION
                 : Math.abs(modifiedY);
         if (speedMultiplier > Math.abs(modifiedY)) {
             speedMultiplier = Math.abs(modifiedY);
