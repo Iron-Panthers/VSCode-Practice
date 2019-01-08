@@ -13,23 +13,23 @@ import frc.robot.Robot;
 import frc.robot.util.ArcadeMoveHelper;
 import frc.robot.util.*;
 
-public class JoystickMove extends Command {
+public class GamepadMove extends Command {
 
   Joystick stick;
-  ArcadeMoveHelper arcade;
+  GamepadMoveHelper gamepad;
 
-  public JoystickMove() {
+  public GamepadMove() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.drive);
     stick = Robot.m_oi.stick;
-    arcade = new ArcadeMoveHelper(stick);
+    gamepad = new GamepadMoveHelper(stick);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    arcade.reset();
+    gamepad.reset();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -40,12 +40,12 @@ public class JoystickMove extends Command {
       arcade.setMotorPowers(0, 1, 0);
     }
     else{*/
-      arcade.setMotorPowers();
+      gamepad.setMotorPowers();
     //}
-    int direction = (Constants.Arcade.INVERT_DIRECTION ? -1 : 1);
+    int direction = (Constants.Gamepad.INVERT_DIRECTION ? -1 : 1);
     Robot.drive.set(
-        arcade.realMotorPower.get("left") * direction,
-        arcade.realMotorPower.get("right") * direction);
+        gamepad.realMotorPower.get("left") * direction,
+        gamepad.realMotorPower.get("right") * direction);
   }
 
   // Make this return true when this Command no longer needs to run execute()

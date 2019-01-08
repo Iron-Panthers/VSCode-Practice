@@ -17,10 +17,22 @@ public class RobotMap {
   public static final int LEFT_MOTOR = 1;
   public static final int RIGHT_MOTOR = 9;
 
-  public static final int JOYSTICK = 0;
-  public static final int THRUSTMASTER = 1;
+  public class Arcade{
+      public static final int PORT = 0;
+      public static final int QUICK_TURN = 5;
+      public static final int REVERSE = 3;
+  }
 
-  public static final int POWER_SHIFT = 1;
-  public static final int QUICK_TURN = 5;
-  public static final int REVERSE = 3;
+  public class Thrustmaster{
+      public static final int PORT = 1;
+      public static final int QUICK_TURN = 5;
+      public static final int REVERSE = 3;
+  }
+  
+  public class Gamepad{
+      public static final int PORT = 2;
+      public static final int QUICK_TURN = 5;
+      public static final int REVERSE = 6;
+  }
+
 }

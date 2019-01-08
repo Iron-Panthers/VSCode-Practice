@@ -20,9 +20,9 @@ public abstract class Controller {
 
     public abstract void setMotorPowers();
 
-    public abstract double[] calculateMotorPower();
+    public abstract double[] calculateMotorPower(double x, double y, double throttle);
 
-    protected boolean getButton(int button) {
+    boolean getButton(int button) {
         return stick.getRawButton(button);
     }
 
@@ -30,14 +30,12 @@ public abstract class Controller {
         return stick.getRawButtonPressed(button);
     }
 
-    double linearDeadzone(double value, double deadzone) { // prevents unintended robot movement when the joystick is
-                                                           // still
+    double linearDeadzone(double value, double deadzone) { // prevents unintended robot movement when the joystick is still
         return (Math.abs(value) > Math.abs(deadzone) ? map(Math.abs(value), deadzone, 1, 0.05, 1) : 0)
                 * (value >= 0 ? 1 : -1);
     }
 
-    HashMap<String, Double> circularDeadzone(double x, double y, double deadzone) { // prevents unintended robotmovement
-                                                                                    // when the joystick is still
+    HashMap<String, Double> circularDeadzone(double x, double y, double deadzone) { // prevents unintended robotmovement when the joystick is still
         HashMap<String, Double> bothValues = new HashMap<String, Double>();
         double magnitude = Math.sqrt(x * x + y * y);
         double scaledMagnitude = (magnitude - deadzone) / (1 - deadzone);

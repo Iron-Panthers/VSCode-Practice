@@ -1,19 +1,14 @@
 package frc.robot.util;
 
 import java.util.HashMap;
+
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.RobotMap;
 
-public class ThrustMasterHelper {
-
-    public HashMap<String, Double> realMotorPower = new HashMap<>();
-    public Joystick stick;
-
-    public boolean reverse = false;
-    public double speedMultiplier;
+public class ThrustMasterHelper extends Controller {
 
     public ThrustMasterHelper(Joystick stick) {
-        this.stick = stick;
+        super(stick);
     }
 
     public void reset(){
@@ -27,12 +22,12 @@ public class ThrustMasterHelper {
         realMotorPower.put("right", rawMotorPower[1]);
     }
 
-    double[] calculateMotorPower(double x, double y, double throttle) {
+    public double[] calculateMotorPower(double x, double y, double throttle) {
         /* Initialization of x and y motor powers */
-        x = linearDeadzone(x, Constants.Thrustmaster.DEADZONE);// prevents the robot from moving without user input
-        y = linearDeadzone(y, Constants.Thrustmaster.DEADZONE) * (reverse? -1 : 1);
-        x = getButton(RobotMap.QUICK_TURN) && x != 0 ? x / Math.abs(x) : x;
-        y /= getButton(RobotMap.POWER_SHIFT) && y != 0 ? Math.abs(y) : 1;
+        HashMap<String, Double> XandY = circularDeadzone(x, y, Constants.Thrustmaster.DEADZONE);
+        x = x > Constants.Thrustmaster.DEADZONE ? linearDeadzone(x, Constants.Thrustmaster.DEADZONE) : XandY.get("x");// prevents the robot from moving without user input
+        y = (y > Constants.Thrustmaster.DEADZONE ? linearDeadzone(y, Constants.Thrustmaster.DEADZONE) : XandY.get("y")) * (reverse? -1 : 1);
+        x = getButton(RobotMap.Thrustmaster.QUICK_TURN) && x != 0 ? x / Math.abs(x) : x;
 
         double modifiedY = y * throttle;// using throttle as a speed multiplyer
 
@@ -42,16 +37,16 @@ public class ThrustMasterHelper {
             turningSpeed = 1;
         }
         turningSpeed *= Constants.Thrustmaster.TURNING_SPEED;
-        turningSpeed = getButton(RobotMap.QUICK_TURN) ? Constants.Thrustmaster.TURNING_SPEED : turningSpeed;
+        turningSpeed = getButton(RobotMap.Thrustmaster.QUICK_TURN) ? Constants.Thrustmaster.TURNING_SPEED : turningSpeed;
 
         /* adds acceleration to the speed */
         if (modifiedY > speedMultiplier) {
-            speedMultiplier = modifiedY - speedMultiplier < Constants.ACCELERATION ? modifiedY
+            speedMultiplier = modifiedY < 0 ? speedMultiplier + Constants.DECELERATION : modifiedY - speedMultiplier < Constants.ACCELERATION ? modifiedY
                     : speedMultiplier + Constants.ACCELERATION;
         }
         if (modifiedY < speedMultiplier) {
-            speedMultiplier = speedMultiplier - modifiedY < Constants.DECELERATION ? modifiedY
-                    : speedMultiplier - Constants.DECELERATION;
+            speedMultiplier = modifiedY > 0 ? speedMultiplier - Constants.DECELERATION : speedMultiplier - modifiedY < Constants.ACCELERATION ? modifiedY
+                    : speedMultiplier - Constants.ACCELERATION;
         }
         speedMultiplier = speedMultiplier > 1 ? 1 : speedMultiplier < -1 ? -1 : speedMultiplier;
         y = Math.copySign(speedMultiplier, y);
@@ -66,38 +61,10 @@ public class ThrustMasterHelper {
         rightMotorPower /= Math.abs(rightMotorPower) > 1 ? Math.abs(rightMotorPower) : 1;
 
         // allows the user to go in reverse quickly
-        reverse = buttonClicked(RobotMap.REVERSE) ? !reverse : reverse;
+        reverse = buttonClicked(RobotMap.Thrustmaster.REVERSE) ? !reverse : reverse;
         // returns the motor speeds in a more spicy way
         double[] motorSpeeds = { leftMotorPower * Constants.Thrustmaster.ROBOT_SPEED,
                 rightMotorPower * Constants.Thrustmaster.ROBOT_SPEED };
         return motorSpeeds;
-    }
-
-    boolean getButton(int button) {
-        return stick.getRawButton(button);
-    }
-
-    boolean buttonClicked(int button) {
-        return stick.getRawButtonPressed(button);
-    }
-
-    double linearDeadzone(double value, double deadzone) {
-        // prevents unintended robot movement when the joystick is still
-        return (Math.abs(value) > Math.abs(deadzone) ? map(Math.abs(value), deadzone, 1, 0.05, 1) : 0)
-                * (value >= 0 ? 1 : -1);
-    }
-
-    HashMap<String, Double> circularDeadzone(double x, double y, double deadzone) {
-        // prevents unintended robot movement when the joystick is still
-        HashMap<String, Double> bothValues = new HashMap<String, Double>();
-        double magnitude = Math.sqrt(x * x + y * y);
-        double scaledMagnitude = (magnitude - deadzone) / (1 - deadzone);
-        bothValues.put("x", x * scaledMagnitude);
-        bothValues.put("y", y * scaledMagnitude);
-        return bothValues;
-    }
-
-    double map(double value, double currentMin, double currentMax, double newMin, double newMax) {
-        return (value - currentMin) / (currentMax - currentMin) * (newMax - newMin) + newMin;
     }
 }

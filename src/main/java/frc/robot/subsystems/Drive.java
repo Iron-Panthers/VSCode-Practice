@@ -8,11 +8,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 import frc.robot.Robot;
+import frc.robot.commands.GamepadMove;
 import frc.robot.commands.JoystickMove;
 import frc.robot.commands.ThrustmasterMove;
 import frc.robot.util.*;
@@ -21,27 +21,34 @@ import frc.robot.util.*;
  * Add your docs here.
  */
 public class Drive extends Subsystem {
-  TalonSRX leftMotor;
-  TalonSRX rightMotor;
+  MotorGroup leftMotorGroup;
+  MotorGroup rightMotorGroup;
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
   public Drive(){
-      leftMotor = Robot.hardware.leftMotor1;
-      rightMotor = Robot.hardware.rightMotor1;
+      leftMotorGroup = new MotorGroup(Robot.hardware.leftMotor1);
+      rightMotorGroup = new MotorGroup(Robot.hardware.rightMotor1);
   }
   public void set(double leftPower, double rightPower) {
-      leftMotor.set(ControlMode.PercentOutput, leftPower);
-      rightMotor.set(ControlMode.PercentOutput, rightPower);
+      leftMotorGroup.leadTalonSRX.set(ControlMode.PercentOutput, leftPower);
+      rightMotorGroup.leadTalonSRX.set(ControlMode.PercentOutput, rightPower);
+      leftMotorGroup.followMasters();
+      rightMotorGroup.followMasters();
   }
   public void stop() {
-      rightMotor.set(ControlMode.PercentOutput, 0);
-      leftMotor.set(ControlMode.PercentOutput, 0);
+      rightMotorGroup.leadTalonSRX.set(ControlMode.PercentOutput, 0);
+      leftMotorGroup.leadTalonSRX.set(ControlMode.PercentOutput, 0);
+      leftMotorGroup.followMasters();
+      rightMotorGroup.followMasters();
   }
 
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
-    setDefaultCommand((Constants.CONTROLLER == "thrustmaster") ? new ThrustmasterMove() : new JoystickMove());
+    setDefaultCommand(
+        (Constants.CONTROLLER == "thrustmaster") ? new ThrustmasterMove() :
+        (Constants.CONTROLLER == "gamepad") ? new GamepadMove() :
+        new JoystickMove());
   }
 }

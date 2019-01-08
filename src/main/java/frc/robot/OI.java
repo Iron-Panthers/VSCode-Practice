@@ -48,6 +48,18 @@ public class OI {
   public JoystickButton trigger;
 
   public OI() {
-    stick = new Joystick(Constants.CONTROLLER == "thrustmaster" ? RobotMap.THRUSTMASTER : RobotMap.JOYSTICK);
+    
+    stick = new Joystick(findJoystick());
+  }
+
+  int findJoystick(){
+    switch(Constants.CONTROLLER){
+      case "thrustmaster":
+        return RobotMap.Thrustmaster.PORT;
+      case "gamepad":
+        return RobotMap.Gamepad.PORT;
+      default:
+        return RobotMap.Arcade.PORT;
+    }
   }
 }
