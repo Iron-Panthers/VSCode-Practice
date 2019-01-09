@@ -26,6 +26,7 @@ public class SpicyJoystick extends Joystick {
 	private void findMagnitude() {
 		x = getX();
 		y = getY();		
+		System.out.println("Joystick Values: "+x+", "+y);
 		magnitude = Math.abs(Math.sqrt(x*x+y*y)); //Pythagorean theorem
 		if (magnitude > 1) { 
 			magnitude = 1;
